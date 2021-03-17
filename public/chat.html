@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="chat-container" style="margin: 0 auto;">
+        <div id="chat" style="margin: auto; border: 0in;">
+            <p id="message">Hello</p>
+            <p id="sender" style="font-size: xx-small;">Vatsa</p>
+        </div>
+    </div>
+    <div class="chat-form-container">
+        <form id="chat-form">
+            <input
+                id="msg"
+                type="text"
+                placeholder="Enter Message"
+                required
+                autocomplete="off"
+            />
+        <input type="submit" value="send" id="send">
+        </form>
+    </div>
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+    integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+    crossorigin="anonymous"
+    ></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
