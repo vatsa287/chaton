@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome!</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="login-container">
-        <form id="login-form" action="chat.html">
+        <form id="login-form" onsubmit="return validateForm()" action="chat.html">
             <input
                 id="username"
                 name="username"
@@ -15,15 +16,19 @@
                 placeholder="Enter username"
                 required
                 autocomplete="off"
-            />
+            /><br>
+            <select id="userroom">
+                <option value="create-room">Create Room</option>
+                <option value="join-room">Join Room</option>
+            </select><br>
             <input
-                id="userroom"
+                id="room-id"
                 name="room"
                 type="text"
                 placeholder="Enter room to chat"
                 required
                 autocomplete="off"
-            />
+            /><br>
             <input type="submit" value="login" id="login"/>
         </form>
     </div>
