@@ -196,7 +196,8 @@ io.on('connection', socket => {
         await socket.emit('message',
             formatMessage(botName, "Welcome to chat app!", moment().format('h:mm a')));
 
-        console.log("obj value " + obj);
+        // 0 when empty
+        // console.log("obj value " + obj);
 
         // Check if room exists
         if(obj != 0) {
