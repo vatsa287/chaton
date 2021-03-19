@@ -7,10 +7,18 @@ chatForm = document.getElementById('chat-form');
 
 
 // Get username and room from URL
-const { username, room } = Qs.parse(location.search, {
-    ignoreQueryPrefix: true,
-  });
 
+// Method 1 [ Causes issue of loosing data after refresh causing server to fail]
+//const { username, room } = Qs.parse(location.search, {
+//    ignoreQueryPrefix: true,
+//  });
+
+// Method 2 [Solves refresh issue, and can move back and forward in tabs without server-crash]
+const queryString = window.location.search;
+console.log(queryString);
+const urlParams = new URLSearchParams(queryString);
+const username = urlParams.get("username");
+const room = urlParams.get("room");
 console.log(username, room);
 
 chatContainer = document.querySelector('.chat-container');
