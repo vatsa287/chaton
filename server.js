@@ -88,6 +88,7 @@ async function deleteAllChatsInDB() {
 // Call this function when delete chats is called
 // deleteAllChatsInDB().catch(console.dir);
 
+
 async function addChatsToDB(room, username, message, time) {
 
     try {
@@ -115,7 +116,7 @@ async function addChatsToDB(room, username, message, time) {
         );
     }
     finally{
-        //
+        // Do nothing (for now)
     }
 }
 
@@ -136,10 +137,13 @@ async function getChatsFromDB(room) {
           projection: { _id: 0 }
         };
 
+        // MongoDB returns cursor not a object for find op
         const cursor = chats.find(query, options);
-        // print a message if no documents were found
+
+        // Return 0 when query is empty
         if ((await cursor.count()) === 0) {
           console.log("No documents found!");
+          return 0;
         }
 
         const arr = await cursor.toArray();
@@ -152,14 +156,14 @@ async function getChatsFromDB(room) {
             obj[i] = await arr[i];
         }
 
-        await console.log(obj[0].message);
+        //await console.log(obj[0].room);
         //console.log(cursor);
 
         return obj;
 
     }
     finally{
-        //
+        // Do nothing here (for now)
     }
 }
 
@@ -189,13 +193,18 @@ io.on('connection', socket => {
         //console.log(obj[0].name);
 
         // Send welcome message to all users on joining
-        socket.emit('message',
+        await socket.emit('message',
             formatMessage(botName, "Welcome to chat app!", moment().format('h:mm a')));
 
-        // Send old messages from db
-        for(var i=0; i<Object.keys(obj).length; i++) {
-            socket.emit('message',
-                formatMessage(obj[i].name, obj[i].message, obj[i].time));
+        console.log("obj value " + obj);
+
+        // Check if room exists
+        if(obj != 0) {
+            // Send old messages from db
+            for(var i=0; i<Object.keys(obj).length; i++) {
+                socket.emit('message',
+                    formatMessage(obj[i].name, obj[i].message, obj[i].time));
+            }
         }
 
         // Notify the room who has joined the chat
