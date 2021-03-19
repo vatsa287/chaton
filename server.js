@@ -4,6 +4,7 @@ const socketio = require('socket.io');
 const express = require('express');
 const mongoose = require('mongoose');
 const moment = require('moment');
+const CryptoJS = require('crypto-js');
 
 const {
     userJoin,
@@ -86,7 +87,7 @@ async function deleteAllChatsInDB() {
 }
 
 // Call this function when delete chats is called
-// deleteAllChatsInDB().catch(console.dir);
+//deleteAllChatsInDB().catch(console.dir);
 
 
 async function addChatsToDB(room, username, message, time) {
@@ -193,7 +194,7 @@ io.on('connection', socket => {
         //console.log(obj[0].name);
 
         // Send welcome message to all users on joining
-        await socket.emit('message',
+        await socket.emit('bot-message',
             formatMessage(botName, "Welcome to chat app!", moment().format('h:mm a')));
 
         // 0 when empty
@@ -201,32 +202,35 @@ io.on('connection', socket => {
 
         // Check if room exists
         if(obj != 0) {
-            // Send old messages from db
+            // Send old messages from db in encrypted format
             for(var i=0; i<Object.keys(obj).length; i++) {
-                socket.emit('message',
+                socket.emit('client-message',
                     formatMessage(obj[i].name, obj[i].message, obj[i].time));
             }
+            console.log("INFO: Message load complete!");
         }
 
         // Notify the room who has joined the chat
         socket.broadcast
         .to(user.room)
         .emit(
-          'message',
+          'bot-message',
           formatMessage(botName, `${user.username} has joined the chat`, moment().format('h:mm a'))
         );
 
     })
 
     // Listen for client-chat message
-    socket.on('chat-message', (msg) => {
+    socket.on('chat-message', (encrypted_msg) => {
         const user = getCurrentUser(socket.id);
 
-        io.to(user.room).emit('message',
-            formatMessage(user.username, msg, moment().format('h:mm a')));
+        // Call method to insert chat-message[ENCRYPTED] to DB
+        addChatsToDB(user.room, user.username, encrypted_msg, moment().format('h:mm a')).catch(console.dir);
 
-        // Call method to insert chat-message to DB
-        addChatsToDB(user.room, user.username, msg, moment().format('h:mm a')).catch(console.dir);
+        // Emit the messages to room in encrypted format
+        io.to(user.room).emit('client-message',
+            formatMessage(user.username, encrypted_msg, moment().format('h:mm a')));
+
     })
 
     // Notify every other user on disconnection
