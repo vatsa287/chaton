@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
-// Format messages to object
+// Import Function to Format messages to object
 const formatMessage = require('./utils/messages');
 
 // Serve the front-end to user on connecttion
@@ -167,16 +167,47 @@ async function getChatsFromDB(room) {
         // Do nothing here (for now)
     }
 }
-
-
 // getChatsFromDB("1").catch(console.dir);
 
+async function getGroupsFromDB(username) {
+
+    try {
+
+        await client.connect();
+
+        const database = client.db("database0");
+
+        // collection = table
+        const chats = database.collection("chats");
+
+        const fieldName = "room";
+        const query = { name : username };
+
+        // MongoDB returns array for distinct op
+        const list_of_groups = await chats.distinct("room", query);
+
+        // Return 0 when query is empty
+        if ( list_of_groups.length === 0) {
+          console.log("No groups found for user: " + username + "!");
+          return 0;
+        }
+
+        // Return array of groups for user: username
+        return list_of_groups;
+
+    }
+    finally{
+        // Do nothing here (for now)
+    }
+}
+
+
 // When user connects to 'socket'
-io.on('connection', socket => {
+io.on('connection', async socket => {
     console.log("New client connected!")
 
     // When user joins new room. Here by default on landing on index.html.
-    // Making tis function async since we want to wait for previous chats
+    // Making this function async since we want to wait for previous chats
     // to be loaded from the database, without continuing further.
     socket.on('joinRoom', async ( {username, room} ) => {
 
@@ -188,9 +219,7 @@ io.on('connection', socket => {
         // Dump here from DB all previous conversations.
         // Do this only when room is entered for 2> time.
         const obj = await getChatsFromDB(user.room).catch(console.dir);
-
         //console.log(Object.keys(obj).length);
-
         //console.log(obj[0].name);
 
         // Send welcome message to all users on joining
@@ -199,7 +228,6 @@ io.on('connection', socket => {
 
         // 0 when empty
         // console.log("obj value " + obj);
-
         // Check if room exists
         if(obj != 0) {
             // Send old messages from db in encrypted format
@@ -219,6 +247,21 @@ io.on('connection', socket => {
         );
 
     })
+
+    socket.on('load-groups-to-sidebar-request', async (user) => {
+
+        // Get all groups of a user for sidebar
+        const list_of_groups = await getGroupsFromDB(user).catch(console.dir);
+        // Check if a user is in atleast one group
+        if(list_of_groups.length) {
+            // Send all group names of that user as an array
+            for(var i=0; i<list_of_groups.length; i++) {
+                socket.emit('load-groups-to-sidebar-response', list_of_groups[i]);
+            }
+            console.log("INFO: Groups load complete!");
+        }
+    })
+
 
     // Listen for client-chat message
     socket.on('chat-message', (encrypted_msg) => {
@@ -243,6 +286,6 @@ io.on('connection', socket => {
 });
 
 
-const PORT = 3005 || process.env.PORT;
+const PORT = 3006 || process.env.PORT;
 
 server.listen(PORT, () => console.log('Server listening on port ' +  PORT));

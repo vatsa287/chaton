@@ -7,22 +7,25 @@ chatForm = document.getElementById('chat-form');
 // Get username and room from URL
 
 // Method 1 [Causes issue of loosing data after refresh causing server to fail]
-const { username, room } = Qs.parse(location.search, {
-    ignoreQueryPrefix: true,
-  });
+// const { username, room } = Qs.parse(location.search, {
+//     ignoreQueryPrefix: true,
+//   });
 
 // Method 2 [Solves refresh issue, and can move back and forward in tabs without server-crash]
-// const queryString = window.location.search;
-// console.log(queryString);
-// const urlParams = new URLSearchParams(queryString);
-// const username = urlParams.get("username");
-// const room = urlParams.get("room");
-// console.log(username, room);
+const queryString = window.location.search;
+console.log(queryString);
+const urlParams = new URLSearchParams(queryString);
+const username = urlParams.get("username");
+const room = urlParams.get("room");
+
 
 chatContainer = document.querySelector('.chat-container');
 
 // Join room [Assume we get the room name from login]
 socket.emit('joinRoom', {username, room});
+
+socket.emit('load-groups-to-sidebar-request', username);
+
 
 // Socket connection
 
@@ -72,6 +75,29 @@ chatForm.addEventListener('submit', (event) => {
 
 })
 
+// When user clicks on different group
+// Display the chats of that group and clear the existing chat
+group.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    const room = document.getElementById(event.target.id).value;
+    console.log("In plain text:" + username + " " + room);
+    // Use same var-name as in socket.on
+    //socket.emit('joinRoom', {username, clicked_group_name});
+    socket.emit('joinRoom', {username, room});
+
+    //Clear existing chat
+    document.querySelector('.chat-container').innerHTML = "";
+})
+
+socket.on('load-groups-to-sidebar-response', (group_name) => {
+    console.log(group_name);
+
+    // Set list-of-groups from server to Fill Sidebar DOM
+    setGroupstoSidebarDOM(group_name);
+
+})
+
 function setMessagetoDOM(name, decrypted_message, time)
 {
     const div = document.createElement('div');
@@ -80,4 +106,13 @@ function setMessagetoDOM(name, decrypted_message, time)
     <p id="sender" style="font-size: xx-small;">'+name+'</p>\
     <p id="time" style="font-size: xx-small;">'+time+'</p>';
     document.querySelector('.chat-container').appendChild(div);
+}
+
+function setGroupstoSidebarDOM(group_name)
+{
+    const div = document.createElement('div');
+    //div.classList.add('group');
+    //div.innerHTML = '<li><p>'+group_name+'</p></li>';
+    div.innerHTML = "<input type='button' id="+group_name+" value="+group_name+">";
+    document.querySelector('.group-container').appendChild(div);
 }
