@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="login-container">
+        <form id="login-form" onsubmit="return validateForm()">
+            <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Enter username"
+                required
+                autocomplete="off"
+            /><br>
+            <select id="userroom">
+                <option value="create-room">Create Room</option>
+                <option value="join-room">Join Room</option>
+            </select><br>
+            <input
+                id="room-id"
+                name="room"
+                type="text"
+                placeholder="Enter room to chat"
+                required
+                autocomplete="off"
+            /><br>
+            <input type="submit" value="login" id="login"/>
+        </form>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>

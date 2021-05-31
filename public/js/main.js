@@ -1,83 +1,227 @@
-const socket = io();
-//var CryptoJS = require("crypto-js");
-
+socket = io(); 
+const contacts = [];
+//const moment = require('moment');
 // Get chat form
 chatForm = document.getElementById('chat-form');
 
 // Get username and room from URL
-
-// Method 1 [Causes issue of loosing data after refresh causing server to fail]
-const { username, room } = Qs.parse(location.search, {
+/*const { username, phone } = Qs.parse(location.search, {
     ignoreQueryPrefix: true,
-  });
+}); */
 
-// Method 2 [Solves refresh issue, and can move back and forward in tabs without server-crash]
-// const queryString = window.location.search;
-// console.log(queryString);
-// const urlParams = new URLSearchParams(queryString);
-// const username = urlParams.get("username");
-// const room = urlParams.get("room");
-// console.log(username, room);
 
-chatContainer = document.querySelector('.chat-container');
+chatContainer = document.querySelector('.chat-window');
+/*unames = JSON.parse(localStorage.getItem("storedNames"));
+const user = unames[0];*/
+const username = localStorage.getItem("usrname");
+const phone = localStorage.getItem("usrphone");
 
 // Join room [Assume we get the room name from login]
-socket.emit('joinRoom', {username, room});
+//socket.emit('joinRoom', { username, phone });
+socket.emit('userLogin', {username, phone});
 
 // Socket connection
-
-// This block gets encrypted message from server:client
-// Decrypt the message before display
 socket.on('bot-message', (message) => {
-    console.log(message);
+    console.log(message)
 
-    // Set message from server:bot to DOM
-    setMessagetoDOM(message.username, message.text, message.time);
+    // Set message from server to DOM
+    setMessagetoDOM(message);
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
 })
 
-// This block gets encrypted message from server:client
-// Decrypt the message before display
-socket.on('client-message', (message) => {
-    console.log(message);
+/*socket.on('loginResponse',(valid) => {
+        if(valid) {
+            window.location.replace("chat.html");
+        } else alert("please enter valid details");
+    })*/
 
-    // Decrypt the message before sending to DOM
-    const decrypted_bytes  = CryptoJS.AES.decrypt(message.text, 'secret key 123');
-    const decrypted_message = decrypted_bytes.toString(CryptoJS.enc.Utf8);
-
-    // Set message from server:client to DOM
-    setMessagetoDOM(message.username, decrypted_message, message.time);
+socket.on('message', (message) => {
+    
+    // Set message from server to DOM
+    setMessagetoDOM(message);
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
+})
+
+/*socket.on('loginResponse',(valid) => {
+        if(valid) {
+            window.location.replace("chat.html");
+        } else alert("please enter valid details");
+    })*/
+
+
+socket.on('loadContacts',(fname, fphone) => {
+console.log("inside loadContacts");
+
+    const friend = {fname, fphone };
+    contacts.push(friend);
+
+    var container = document.getElementById("tab-1");
+
+    var input = document.createElement("input");
+                input.type = "submit";
+                input.name = fname;
+                input.value = fname;
+                container.appendChild(input);
+
+                input.onclick = function() {
+                  document.getElementById("cwcn").textContent = fname;
+                  socket.emit('private-chat', username, fname);
+                  document.querySelector('.chat-window').innerHTML = "";
+                }
 })
 
 // Add event for submit
 chatForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    // Message from client in plain-text
-    const msg = document.getElementById('msg').value;
-    console.log("In plain text:" + msg);
-
-    // Send encrypted message to server
-    const cipher_msg = CryptoJS.AES.encrypt(msg, 'secret key 123').toString();
-    console.log("Sent cipher_msg: " + cipher_msg);
+    const txt = document.getElementById('msg').value;
+    //const smg = document.getElementById('msg').value;
+    const recepient = document.getElementById('cwcn').textContent;
 
     // Emit chat message to server got from user[send-button]
-    socket.emit('chat-message', cipher_msg);
+    console.log(recepient)
+    //const u = getSID(np);
+    //console.log("sending    "+a)
+    /*var time = today.getHours() + ":" + today.getMinutes();
+    const message = {from: username, to: recepient, msg: text, time: time};
+    setMessagetoDOM(message);*/
+    //const rec = contacts.find(friend => friend.name === recepient);
+    socket.emit('chat-message', {txt, recepient})
 
     // Set submit to empty
     document.getElementById('msg').value = "";
 
 })
 
-function setMessagetoDOM(name, decrypted_message, time)
+function setMessagetoDOM(message)
 {
-    const div = document.createElement('div');
-    div.classList.add('message');
-    div.innerHTML = '<p id="message">'+decrypted_message+'</p>\
-    <p id="sender" style="font-size: xx-small;">'+name+'</p>\
-    <p id="time" style="font-size: xx-small;">'+time+'</p>';
-    document.querySelector('.chat-container').appendChild(div);
+    if(username == message.from) {
+        const div = document.createElement('div');
+        div.classList.add('sender');
+        div.innerHTML = '<span class="sender-message-tail">'
+        +message.from+'</span><span class="sender-message">'+message.chat+'</span>\
+        <span class="message-time">'+message.time+'</span>';
+        document.querySelector('.chat-window').appendChild(div);
+    } else {
+            const div = document.createElement('div');
+            div.classList.add('receiver');
+            div.innerHTML = '<span class="receiver-message-tail">'
+            +message.from+'</span><span class="receiver-message">'+message.chat+'</span>\
+            <span class="message-time">'+message.time+'</span>';
+            document.querySelector('.chat-window').appendChild(div);
+        } 
+         
+    }
+
+
+
+    /*const unames = [];
+    var id = null;
+
+    //localStorage.clear();
+        
+    if(localStorage.getItem("storedNames") != null){
+        unames = JSON.parse(localStorage.getItem("storedNames"));
+        var n = unames.length;
+        var i;
+        for (i=0;i<n;i++) {
+            const u = unames[i];
+            if(u.phno  == phno || u.name == name) {
+                alert('user already exists');
+                return false;
+            }
+        }
+        const user = {id, name, phno };
+        unames.push(user);
+        localStorage.setItem("storedNames",JSON.stringify(unames));
+        return true;
+    } else {
+        const user = {id, name, phno };
+        unames.push(user);
+        localStorage.setItem("storedNames",JSON.stringify(unames));
+        return true;
+    }*/
+
+/*function validateForm() {
+    var name = document.getElementById('username').value;
+    //var pass = document.getElementById('passwd').value;
+    var phno = document.getElementById('phone').value;
+    const users = [];
+    //localStorage.clear();
+    if(localStorage.getItem("storedNames") != null){
+        users = JSON.parse(localStorage.getItem("storedNames"));
+        var n = users.length;
+        var i;
+        for (i=0;i<n;i++) {
+            const u = users[i];
+            if(u.name == name && u.phno  == phno) {
+                alert('login successfull!!');
+                return true;
+            }
+        }
+        alert('please enter valid details!!');
+        return false;
+    } else {
+        alert('please signup!!');
+        return false;
+    }
+}
+*/
+function addcontact() {
+     
+    var fname = document.getElementById("fname").value;
+    var fphone = document.getElementById("fphone").value;
+
+    console.log(fname, fphone);
+
+    const friend = {fname, fphone};
+    contacts.push(friend);
+
+    socket.emit('addContact', {username, fname, fphone});
+
+    var container = document.getElementById("tab-1");
+
+    var input = document.createElement("input");
+                input.type = "submit";
+                input.name = fname;
+                input.value = fname;
+                container.appendChild(input);
+
+                input.onclick = function() {
+                  document.getElementById("cwcn").textContent = fname;
+                  socket.emit('private-chat', username, fname);
+                  document.querySelector('.chat-window').innerHTML = "";
+                }
+}
+
+
+function creategroup() {
+    var groupname = document.getElementById("groupname").value;
+    
+    console.log(groupname);
+
+    const group = {username, groupname};
+    
+    socket.emit('creategroup', {username, groupname});
+
+    socket.on('group-created', (gID) => {
+        document.getElementById("gid").value = gID;
+        $("#grpID").show();
+    })
+
+    var container = document.getElementById("tab-2");
+
+    var input = document.createElement("input");
+                input.type = "submit";
+                input.name = groupname;
+                input.value = groupname;
+                container.appendChild(input);
+
+                input.onclick = function() {
+                  document.getElementById("cwcn").textContent = groupname;
+                  socket.emit('group-chat', username, groupname);
+                  document.querySelector('.chat-window').innerHTML = "";
+                }
 }

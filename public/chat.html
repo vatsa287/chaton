@@ -3,34 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Chat On</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div class="chat-container" style="margin: 0 auto;">
-        <div id="chat" style="margin: auto; border: 0in;">
-            <p id="message">Hello</p>
-            <p id="sender" style="font-size: xx-small;">Vatsa</p>
+  <div class="loading" delay-hide="3000"></div>
+  <div class="grid">
+    <!-- App background -->
+    <!-- App -->
+    <div class="app">
+      <div class="sidebar">
+      <!-- Sidebar header -->
+      <div class="sidebar-header">
+        <!--<img src="images/me.jpg" />-->
+        <h1><b>Chat On</b></h1>
+        <div class="sidebar-header-icons">
+          <!--<img src="images/status.svg" />
+          <img src="images/message-icon.svg" />
+          <img src="images/menu-icon.svg" />-->
         </div>
+      </div>
+      <!-- Chats -->
+      <div class="chats">
+        <!--<button class="addbtn" id="addbtn"><a href="#myModal">Add Contact</a></button>-->
+        <div class="tabs">
+  <ul class="tabs-nav">
+    <li><a href="#tab-1">Friends</a></li>
+    <li><a href="#tab-2">Groups</a></li>
+  </ul>
+  <div class="tabs-stage">
+    <div id="tab-1">
+      <input type="button" id="addcontact" value="Add Contact" />
+
     </div>
-    <div class="chat-form-container">
-        <form id="chat-form">
-            <input
-                id="msg"
-                type="text"
-                placeholder="Enter Message"
-                required
-                autocomplete="off"
-            />
-        <input type="submit" value="send" id="send">
-        </form>
     </div>
-    <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
-    integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
-    crossorigin="anonymous"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="js/main.js"></script>
+    <div class="tabs-stage">
+    <div id="tab-2">
+      <input type="button" id="addgroup" value="Add Group" />
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal 1 content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:25px 50px;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4><span class="glyphicon glyphicon-user"></span> Add Contact</h4>
+        </div>
+        <div class="modal-body" style="padding:40px 50px;">
+          <form role="form" id="myform" >
+            <div class="form-group">
+              <label for="usrname"><span class="glyphicon glyphicon-user"></span> Username</label>
+              <input type="text" class="form-control" name="fname" id="fname" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+              <label for="ph"><span class="glyphicon glyphicon-phone"></span> Phone</label>
+              <input type="text" class="form-control" name="fphone" id="fphone" placeholder="Enter phone number">
+            </div>
+              <button type="button" class="btn btn-success btn-block" onclick="addcontact()">
+                <span class="glyphicon glyphicon-add"></span> ADD</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+        </div>
+      </div>
+      </div>
+  </div> 
+
+
+
+  <div class="modal fade" id="Modal2" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal 2 content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:25px 25px;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4><span class="glyphicon glyphicon-user"></span> Add group</h4>
+        </div>
+        <div class="modal-body" style="padding:20px 25px;">
+          <form role="form" id="form2" >
+            <div class="form-group">
+              <label for="grpname"><span class="glyphicon glyphicon-group"></span> Groupname</label>
+              <input type="text" class="form-control" name="groupname" id="groupname" placeholder="Enter groupname">
+            </div>
+            <div class="form-group" id="grpID" display="none">
+              <label for="ph"><span class="glyphicon glyphicon-phone"></span> group ID</label>
+              <input type="text" class="form-control" name="gid" id="gid" value="">
+            </div>
+              <button type="button" class="btn btn-success btn-block" onclick="creategroup()">
+                <span class="glyphicon glyphicon-add"></span> create</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+        </div>
+      </div>
+      </div>
+  </div> 
+
+
+
+
+
+    <div class="main">
+      <!-- Main chat window header -->
+      <div class="chat-window-header">
+        <div class="chat-window-header-left">
+          <img
+              class="chat-window-contact-image"
+              src="images/user.png"
+          />
+          
+            
+            <div class="contact-name-and-status-container">
+              <!-- <span class="chat-window-contact-name" id="cwcn"></span> -->
+              <span class="chat-window-contact-name" id="cwcn">Chat-bot</span>
+              <span id="rec"></span>
+              <span class="chat-window-contact-status">Online</span>
+            </div>
+          </div>
+          <div class="chat-window-header-right">
+            <!--<img class="chat-window-search-icon" src="images/search-icon.svg" />-->
+            <img class="chat-window-menu-icon" src="images/menu-icon.svg" />
+          </div>
+      </div>
+      <div class="chat-window">
+        
+        <div class="chat-form-container">
+          <form id="chat-form">
+          <div class="type-message-bar">
+            <div class="type-message-bar-left"></div>
+            <div class="type-message-bar-center">
+                  <input
+                    id="msg"
+                    type="text"
+                    placeholder="Enter Message"
+                    required
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="type-message-bar-right">
+                  <input type="submit" value="send" id="send">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script
+          src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+          integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+          crossorigin="anonymous">
+        </script>
+        
+        <script src="js/main.js"></script>
+        <script type="text/javascript">
+          // Show the first tab by default
+$('.tabs-stage div').hide();
+$('.tabs-stage div:first').show();
+$('.tabs-nav li:first').addClass('tab-active');
+
+// Change tab class and display content
+$('.tabs-nav a').on('click', function(event){
+  event.preventDefault();
+  $('.tabs-nav li').removeClass('tab-active');
+  $(this).parent().addClass('tab-active');
+  $('.tabs-stage div').hide();
+  $($(this).attr('href')).show();
+});
+
+$(document).ready(function(){
+    $("#addcontact").click(function(){
+    $("#myModal").modal();
+  });
+});
+
+
+$(document).ready(function(){
+    $("#addgroup").click(function(){
+    $("#Modal2").modal();
+  });
+});
+
+$(document).ready(function(){
+  var loading = $(".loading");
+  loading.delay(loading.attr("delay-hide")).slideUp();
+});
+</script>
 </body>
 </html>
