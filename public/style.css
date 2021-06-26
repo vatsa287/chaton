@@ -15,6 +15,15 @@
 	color: navy;
 }
 
+/*#chat-usr {
+  display: none;
+}
+
+
+#chat-ph {
+  display: none;
+}*/
+
 #room {
 	margin-top: 25px;
 }
@@ -66,7 +75,7 @@ a {
 .loading {
   width: 100%;
   height: 100%;
-  position: fixed;
+  /*position: fixed;*/
   top: 0;
   left: 0;
   background: limegreen;
@@ -273,10 +282,10 @@ a {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 1.5rem;
+  margin-left: 0.5rem;
   padding-right: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--chat-border);
+  border-bottom: 2px solid var(--chat-border);
 }
 
 /* This line removes the border bottom from the last chat */
@@ -343,11 +352,11 @@ a {
   align-items: center;
 }
 
-.unread-messages-number {
+#unread-messages {
   display: inline-block;
   width: 2rem;
   height: 2rem;
-  background: var(--whatsapp-green);
+  background: blue;
   color: var(--white);
   font-weight: 500;
   border-radius: 50%;
@@ -630,12 +639,21 @@ input[type="range"] {
   left: -1rem;
 }
 
+.chat-form-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+
 /* Type message bar */
 .type-message-bar {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 6rem;
   display: flex;
   background: var(--type-message-bar);
   padding: 1rem 2rem;

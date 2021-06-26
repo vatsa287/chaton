@@ -3,9 +3,9 @@ const contacts = [];
 const groups = [];
 
 // Join user to chat
-function userJoin(id, username, phone) {
+function userJoin(id, username, phone, publickey, pass_hash) {
   
-  const user = { id, username, phone };
+  const user = { id, username, phone, publickey, pass_hash};
   
   users.push(user);
   return user;
@@ -32,9 +32,9 @@ function userLeave(id) {
   }
 }
 
-function getRecepient(name) {
-  console.log(name)
-  return users.find(user => user.username === name);
+function getRecepient(phone) {
+  console.log(phone)
+  return users.find(user => user.phone === phone);
 }
 
 // Get room users

@@ -9,9 +9,12 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.0.1/jsencrypt.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+  
 </head>
 <body>
-  <div class="loading" delay-hide="3000"></div>
+  <!--<div class="loading" delay-hide="3000"></div>-->
   <div class="grid">
     <!-- App background -->
     <!-- App -->
@@ -21,6 +24,7 @@
       <div class="sidebar-header">
         <!--<img src="images/me.jpg" />-->
         <h1><b>Chat On</b></h1>
+        
         <div class="sidebar-header-icons">
           <!--<img src="images/status.svg" />
           <img src="images/message-icon.svg" />
@@ -38,7 +42,7 @@
   <div class="tabs-stage">
     <div id="tab-1">
       <input type="button" id="addcontact" value="Add Contact" />
-
+      
     </div>
     </div>
     <div class="tabs-stage">
@@ -68,7 +72,7 @@
               <label for="ph"><span class="glyphicon glyphicon-phone"></span> Phone</label>
               <input type="text" class="form-control" name="fphone" id="fphone" placeholder="Enter phone number">
             </div>
-              <button type="button" class="btn btn-success btn-block" onclick="addcontact()">
+              <button type="button" class="btn btn-success btn-block" id="addContact" >
                 <span class="glyphicon glyphicon-add"></span> ADD</button>
           </form>
         </div>
@@ -78,8 +82,6 @@
       </div>
       </div>
   </div> 
-
-
 
   <div class="modal fade" id="Modal2" role="dialog">
     <div class="modal-dialog">
@@ -92,15 +94,13 @@
         <div class="modal-body" style="padding:20px 25px;">
           <form role="form" id="form2" >
             <div class="form-group">
-              <label for="grpname"><span class="glyphicon glyphicon-group"></span> Groupname</label>
-              <input type="text" class="form-control" name="groupname" id="groupname" placeholder="Enter groupname">
+              
+              <input type="button" name="creategroup" value="Create group" id="createGroup">
             </div>
-            <div class="form-group" id="grpID" display="none">
-              <label for="ph"><span class="glyphicon glyphicon-phone"></span> group ID</label>
-              <input type="text" class="form-control" name="gid" id="gid" value="">
+            <div class="form-group" display="none">
+              <input type="button" name="joingroup" value="Join group" id="joinGroup">
             </div>
-              <button type="button" class="btn btn-success btn-block" onclick="creategroup()">
-                <span class="glyphicon glyphicon-add"></span> create</button>
+    
           </form>
         </div>
         <div class="modal-footer">
@@ -111,8 +111,60 @@
   </div> 
 
 
+  <div class="modal fade" id="Modal3" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal 3 content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:25px 25px;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4><span class="glyphicon glyphicon-user"></span> Add group</h4>
+        </div>
+        <div class="modal-body" style="padding:20px 25px;">
+          <form role="form" id="form3" >
+            <div class="form-group">
+              <label for="grpname"><span class="glyphicon glyphicon-group"></span> Groupname</label>
+              <input type="text" class="form-control" name="grpname" id="grpname" placeholder="Enter groupname">
+            </div>
+            <div class="form-group" id="grpID" display="none">
+              <label for="gid"></span> Group ID</label>
+              <input type="text" class="form-control" name="gid" id="gid" value="" disabled>
+            </div>
+              <button type="button" class="btn btn-success btn-block" id="creategroup">
+                <span class="glyphicon glyphicon-add"></span> create</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+        </div>
+      </div>
+      </div>
+  </div>
 
 
+  <div class="modal fade" id="Modal4" role="dialog">
+    <div class="modal-dialog">
+    <!-- Modal 3 content-->
+      <div class="modal-content">
+        <div class="modal-header" style="padding:25px 25px;">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4><span class="glyphicon glyphicon-user"></span> Add group</h4>
+        </div>
+        <div class="modal-body" style="padding:20px 25px;">
+          <form role="form" id="form4" >
+            <div class="form-group" id="grpID" display="none">
+              <label for="gid"></span> Group ID</label>
+              <input type="text" class="form-control" name="joingrpId" id="joingrpId" placeholder="Enter group ID" >
+            </div>
+              <button type="button" class="btn btn-success btn-block" id="joingroup">
+                <span class="glyphicon glyphicon-add"></span> Join</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+        </div>
+      </div>
+      </div>
+  </div>
 
     <div class="main">
       <!-- Main chat window header -->
@@ -126,9 +178,9 @@
             
             <div class="contact-name-and-status-container">
               <!-- <span class="chat-window-contact-name" id="cwcn"></span> -->
-              <span class="chat-window-contact-name" id="cwcn">Chat-bot</span>
+              <span class="chat-window-contact-name" id="chat-name">Chat-bot</span>
               <span id="rec"></span>
-              <span class="chat-window-contact-status">Online</span>
+              <span class="chat-window-contact-status" id="chat-id">Online</span>
             </div>
           </div>
           <div class="chat-window-header-right">
@@ -137,11 +189,20 @@
           </div>
       </div>
       <div class="chat-window">
+        <div id="greeting">
+          <p>Welcome</p><br>
+          <p id="chat-usr"><%= data.username %></p><br>
+        <p id="chat-ph"><%= data.phone %></p><br>
+        <p id="pk" style="display: none;"><%= data.publickey %></p>
+        <p id="ph" style="display: none;"><%= data.password_hash %></p>
+        <p id="ty" style="display: none;"><%= type %></p>
+        </div>
+      </div>
         
-        <div class="chat-form-container">
+          <div class="chat-form-container">
           <form id="chat-form">
-          <div class="type-message-bar">
-            <div class="type-message-bar-left"></div>
+            <div class="type-message-bar">
+            <!--<div class="type-message-bar-left"></div>-->
             <div class="type-message-bar-center">
                   <input
                     id="msg"
@@ -150,14 +211,15 @@
                     required
                     autocomplete="off"
                   />
-                </div>
-                <div class="type-message-bar-right">
-                  <input type="submit" value="send" id="send">
-                </div>
               </div>
-            </form>
+              <div class="type-message-bar-right">
+                  <input type="submit" value="send" id="send">
+              </div>
+            </div>
+          </form>
           </div>
-        </div>
+        
+        
       </div>
     </div>
   </div>
@@ -167,7 +229,7 @@
           crossorigin="anonymous">
         </script>
         
-        <script src="js/main.js"></script>
+        <!--<script src="js/main.js"></script>-->
         <script type="text/javascript">
           // Show the first tab by default
 $('.tabs-stage div').hide();
@@ -183,6 +245,8 @@ $('.tabs-nav a').on('click', function(event){
   $($(this).attr('href')).show();
 });
 
+$('#grpID').hide();
+
 $(document).ready(function(){
     $("#addcontact").click(function(){
     $("#myModal").modal();
@@ -197,9 +261,22 @@ $(document).ready(function(){
 });
 
 $(document).ready(function(){
+    $("#createGroup").click(function(){
+    $("#Modal3").modal();
+  });
+});
+
+$(document).ready(function(){
+    $("#joinGroup").click(function(){
+    $("#Modal4").modal();
+  });
+});
+
+$(document).ready(function(){
   var loading = $(".loading");
   loading.delay(loading.attr("delay-hide")).slideUp();
 });
 </script>
+<script src = "js/bundle.js"></script>
 </body>
 </html>

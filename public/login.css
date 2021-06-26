@@ -1,78 +1,169 @@
-body {
+*{
   margin: 0;
   padding: 0;
-  background-image: url(https://picsum.photos/2500/1500?image=1041);
-  background-repeat: no-repeat;
-  font-family: sans-serif;
+  box-sizing: border-box;
+  user-select: none;
+}
+.bg-img{
+  background: url('bg-login.jpg');
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+.bg-img:after{
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  /*background: rgba(219,255,51,0.5);*/
 }
 
-.box {
+.bg-image{
+  background: url('as.jpg');
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+}
+.bg-image:after{
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  /*background: rgba(219,255,51,0.5);*/
+}
+.content{
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 25rem;
-  padding: 2.5rem;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 0.625rem;
-}
-
-.box h2 {
-  margin: 0 0 1.875rem;
-  padding: 0;
-  color: #fff;
+  z-index: 999;
   text-align: center;
+  padding: 60px 32px;
+  width: 370px;
+  transform: translate(-50%,-50%);
+  background: rgba(51,255,189);
+  box-shadow: -1px 4px 28px 0px rgba(0,0,0,0.75);
 }
 
-.box .inputBox {
-  position: relative;
-}
-
-.box .inputBox input {
-  width: 100%;
-  padding: 0.625rem 0;
-  font-size: 1rem;
-  color: #fff;
-  letter-spacing: 0.062rem;
-  margin-bottom: 1.875rem;
-  border: none;
-  border-bottom: 0.065rem solid #fff;
-  outline: none;
-  background: transparent;
-}
-
-.box .inputBox label {
+.body-content{
   position: absolute;
-  top: 0;
-  left: 0;
-  padding: 0.625rem 0;
-  font-size: 1rem;
-  color: #fff;
-  pointer-events: none;
-  transition: 0.5s;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+  text-align: center;
+  padding: 60px 32px;
+  width: 370px;
+  transform: translate(-50%,-50%);
+  background: rgb(133, 255, 51);
+  box-shadow: -1px 4px 28px 0px rgba(0,0,0,0.75);
 }
 
-.box .inputBox input:focus ~ label,
-.box .inputBox input:valid ~ label,
-.box .inputBox input:not([value=""]) ~ label {
-  top: -1.125rem;
-  left: 0;
-  color: #03a9f4;
-  font-size: 0.75rem;
+.content header{
+  color: black;
+  font-size: 33px;
+  font-weight: 600;
+  margin: 0 0 35px 0;
+  font-family: 'Montserrat',sans-serif;
 }
 
-.box input[type="submit"] {
+.body-content header{
+  color: black;
+  font-size: 33px;
+  font-weight: 600;
+  margin: 0 0 35px 0;
+  font-family: 'Montserrat',sans-serif;
+}
+
+
+.field{
+  position: relative;
+  height: 45px;
+  width: 100%;
+  display: flex;
+  background: rgba(255,255,255,0.7);
+}
+.field span{
+  color: #222;
+  width: 40px;
+  line-height: 45px;
+}
+.field input{
+  height: 100%;
+  width: 100%;
+  background: transparent;
   border: none;
   outline: none;
-  color: #fff;
-  background-color: #03a9f4;
-  padding: 0.625rem 1.25rem;
+  color: #222;
+  font-size: 16px;
+  font-family: 'Poppins',sans-serif;
+}
+.space{
+  margin-top: 16px;
+}
+.show{
+  position: absolute;
+  right: 13px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #222;
+  display: none;
   cursor: pointer;
-  border-radius: 0.312rem;
-  font-size: 1rem;
+  font-family: 'Montserrat',sans-serif;
+}
+.pass-key:valid ~ .show{
+  display: block;
+}
+.pass{
+  text-align: left;
+  margin: 5px 0;
+}
+.pass a{
+  color: white;
+  text-decoration: none;
+  font-family: 'Poppins',sans-serif;
+}
+.pass:hover a{
+  text-decoration: underline;
+}
+.field input[type="submit"]{
+  background: blue;
+  border: 1px solid #2691d9;
+  color: white;
+  font-size: 18px;
+  letter-spacing: 1px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Montserrat',sans-serif;
+}
+.field input[type="submit"]:hover{
+  background: #2691d9;
+}
+.login{
+  color: white;
+  margin: 20px 0;
+  font-family: 'Poppins',sans-serif;
 }
 
-.box input[type="submit"]:hover {
-  background-color: #1cb1f5;
+.signup{
+  font-size: 15px;
+  color: green;
+  font-family: 'Poppins',sans-serif;
+}
+.signup a{
+  color: blue;
+  text-decoration: none;
+}
+.signup a:hover{
+  text-decoration: underline;
+}
+input[type="text"] , input[type="password"] {
+  padding: 5px 0px 5px 30px;
+}
+
+input:focus {
+  box-shadow: 0 0 8px green;
+
 }

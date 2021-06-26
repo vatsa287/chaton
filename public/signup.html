@@ -3,30 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome!</title>
-    <link rel="stylesheet" href="style.css">
+    <title>SignUp</title>
+    <link rel="stylesheet" href="login.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </head>
 <body>
-    <div id="login-container">
-        <form id="login-form" onsubmit="return validate()" action="index.html">
-            <input
-                id="user-name"
-                name="user-name"
-                type="text"
-                placeholder="Enter username"
-                required
-                autocomplete="off"
-            /><br><br>
-            <input
-                id="phno"
-                name="phno"
-                type="text"
-                placeholder="Enter phone number"
-                required
-                autocomplete="off"
-            /><br>
-        </form>
-    </div>
-    <script src="js/main.js"></script>
+    <div class="bg-image">
+      <div class="body-content">
+        <header>SignUp Form</header>
+        <form id="signup-form" action="/signup.html" method="post">
+          <div class="field">  
+            <input 
+            type="text" 
+            required placeholder="Username" 
+            name="username"
+            id="username"
+            autocomplete="off"/>
+          </div>
+            <div class="field space">
+            <input 
+            type="password" 
+            class="pass-key" 
+            required placeholder="Password" 
+            name="password"
+            id="password"
+            autocomplete="off"/>
+          </div><br>
+          <div class="field">
+            <input type="text" required placeholder="Enter 10 digit phone number" 
+            id="phone" name="phone" autocomplete="off"/>
+          </div>
+        <div class="pass">
+            <br>
+          </div>
+
+<div class="field">
+    <input type="submit" value="signup"  id="signup"/>
+</div>
+</form>
+</div>
+</div>
 </body>
 </html>

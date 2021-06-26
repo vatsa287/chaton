@@ -4,53 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome!</title>
-    <link rel="stylesheet" href="style.css">
-    <!--<script src="/socket.io/socket.io.js"></script>-->
+    <link rel="stylesheet" href="login.css">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.0.1/jsencrypt.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    
 </head>
-
 <body>
-    <div id="login-container">
-        <form id="login-form" action="/" method="post">
-            <input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="Enter username"
-                required
-                autocomplete="off"
-            /><br><br>
-            <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Enter password"
-                required
-                autocomplete="off"
-            /><br><br>
-            <input
-                id="phone"
-                name="phone"
-                type="text"
-                placeholder="Enter phone number"
-                required
-                autocomplete="off"
-            /><br>
-            <input type="button" value="login" onclick="userlogin()" id="login" /><br><br>
-            New user?<button type="button">signup</button>
-        </form>
-    </div>
-    <script type="text/javascript">
-    function userlogin() {
-   
-    const username = document.getElementById("username").value;
-    const pass = document.getElementById("password").value;
-    const phone = document.getElementById("phone").value;
-   
-    localStorage.setItem("usrname", username);
-    localStorage.setItem("usrphone", phone);
-    window.location.replace("chat.html");
+    <div class="bg-img">
+      <div class="content">
+        <header>Login Form</header>
+        <form id="login-form" action="/index.html" method="post">
+          <div class="field">  
+            <input 
+            type="text" 
+            required placeholder="Username" 
+            name="username"
+            id="username"
+            autocomplete="off"/>
+          </div>
+            <div class="field space">
+            <input 
+            type="password" 
+            class="pass-key" 
+            required placeholder="Password" 
+            name="password"
+            autocomplete="off"/>
+            <!--<span class="show">SHOW</span>-->
+          </div><br>
+          <div class="field">
+            <!--<span class="fa fa-user"></span>-->
+            <input type="text" required placeholder="Enter 10 digit phone number" 
+            id="phone" name="phone" autocomplete="on"/>
+          </div>
+        <div class="pass">
+            <br>
+          </div>
 
-}
-    </script>
+<div class="field">
+    <input type="submit" value="login"  id="login"/>
+          </div>
+</form>
+<br>
+<div class="signup">
+Don't have account?
+          <a href="signup.html">Signup Now</a>
+        </div>
+</div>
+</div>
 </body>
 </html>
