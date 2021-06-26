@@ -11,7 +11,7 @@
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-  <div class="loading" delay-hide="3000"></div>
+  <!--<div class="loading" delay-hide="3000"></div>-->
   <div class="grid">
     <!-- App background -->
     <!-- App -->
@@ -97,7 +97,7 @@
             </div>
             <div class="form-group" id="grpID" display="none">
               <label for="ph"><span class="glyphicon glyphicon-phone"></span> group ID</label>
-              <input type="text" class="form-control" name="gid" id="gid" value="">
+              <input type="text" class="form-control" name="gid" id="gid" value="" disabled>
             </div>
               <button type="button" class="btn btn-success btn-block" onclick="creategroup()">
                 <span class="glyphicon glyphicon-add"></span> create</button>
@@ -126,7 +126,7 @@
             
             <div class="contact-name-and-status-container">
               <!-- <span class="chat-window-contact-name" id="cwcn"></span> -->
-              <span class="chat-window-contact-name" id="cwcn">Chat-bot</span>
+              <span class="chat-window-contact-name" id="chat-name">Chat-bot</span>
               <span id="rec"></span>
               <span class="chat-window-contact-status">Online</span>
             </div>
@@ -137,11 +137,12 @@
           </div>
       </div>
       <div class="chat-window">
+      </div>
         
-        <div class="chat-form-container">
+          <div class="chat-form-container">
           <form id="chat-form">
-          <div class="type-message-bar">
-            <div class="type-message-bar-left"></div>
+            <div class="type-message-bar">
+            <!--<div class="type-message-bar-left"></div>-->
             <div class="type-message-bar-center">
                   <input
                     id="msg"
@@ -150,14 +151,15 @@
                     required
                     autocomplete="off"
                   />
-                </div>
-                <div class="type-message-bar-right">
-                  <input type="submit" value="send" id="send">
-                </div>
               </div>
-            </form>
+              <div class="type-message-bar-right">
+                  <input type="submit" value="send" id="send">
+              </div>
+            </div>
+          </form>
           </div>
-        </div>
+        
+        
       </div>
     </div>
   </div>

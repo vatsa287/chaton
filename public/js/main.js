@@ -16,13 +16,15 @@ const user = unames[0];*/
 const username = localStorage.getItem("usrname");
 const phone = localStorage.getItem("usrphone");
 
+
+
 // Join room [Assume we get the room name from login]
 //socket.emit('joinRoom', { username, phone });
 socket.emit('userLogin', {username, phone});
 
 // Socket connection
 socket.on('bot-message', (message) => {
-    console.log(message)
+    console.log(message.time);
 
     // Set message from server to DOM
     setMessagetoDOM(message);
@@ -39,7 +41,11 @@ socket.on('bot-message', (message) => {
 socket.on('message', (message) => {
     
     // Set message from server to DOM
-    setMessagetoDOM(message);
+
+            setMessagetoDOM(message);
+
+            console.log(message.time);
+    
 
     chatContainer.scrollTop = chatContainer.scrollHeight;
 })
@@ -60,13 +66,13 @@ console.log("inside loadContacts");
     var container = document.getElementById("tab-1");
 
     var input = document.createElement("input");
-                input.type = "submit";
+                input.type = "button";
                 input.name = fname;
                 input.value = fname;
                 container.appendChild(input);
 
                 input.onclick = function() {
-                  document.getElementById("cwcn").textContent = fname;
+                  document.getElementById("chat-name").textContent = fname;
                   socket.emit('private-chat', username, fname);
                   document.querySelector('.chat-window').innerHTML = "";
                 }
@@ -78,8 +84,7 @@ chatForm.addEventListener('submit', (event) => {
 
     const txt = document.getElementById('msg').value;
     //const smg = document.getElementById('msg').value;
-    const recepient = document.getElementById('cwcn').textContent;
-
+    const recepient = document.getElementById('chat-name').textContent;
     // Emit chat message to server got from user[send-button]
     console.log(recepient)
     //const u = getSID(np);
@@ -184,13 +189,13 @@ function addcontact() {
     var container = document.getElementById("tab-1");
 
     var input = document.createElement("input");
-                input.type = "submit";
+                input.type = "button";
                 input.name = fname;
                 input.value = fname;
                 container.appendChild(input);
 
                 input.onclick = function() {
-                  document.getElementById("cwcn").textContent = fname;
+                  document.getElementById("chat-name").textContent = fname;
                   socket.emit('private-chat', username, fname);
                   document.querySelector('.chat-window').innerHTML = "";
                 }

@@ -23,7 +23,7 @@ const io = socketio(server);
 var bodyParser = require('body-parser');
 const router = express.Router();
 
-app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(bodyParser.urlencoded({ extended: false }));
 
 const connection_url = "mongodb+srv://admin:admin@cluster0.gdn9i.mongodb.net/database0?retryWrites=true&w=majority";
 const MongoClient = require('mongodb').MongoClient;
@@ -264,6 +264,62 @@ async function getChatsFromDB(username, fname) {
     }
 }
 
+
+
+async function getGroupFromDB(username) {
+
+    try {
+
+        await client.connect();
+
+        const database = client.db("database0");
+
+        // collection = table
+        const groupss = database.collection("groups");
+
+        const query = { $or: [{ admin: username }, { recepient: username }] };
+
+        const options = {
+          projection: { _id: 0 }
+        };
+
+        // MongoDB returns cursor not a object for find op
+        const cursor = groups.find(query, options);
+
+        // Return 0 when query is empty
+        if ((await cursor.count()) === 0) {
+          console.log("No documents found!");
+          return 0;
+        }
+
+        const arr = await cursor.toArray();
+
+        const obj = {};
+
+        // Array to object
+        for(let i=0; i<arr.length; i++)
+        {
+            obj[i] = await arr[i];
+        }
+
+        //await console.log(obj[0].room);
+        //console.log(cursor);
+
+        return obj;
+
+    }
+    finally{
+        // Do nothing here (for now)
+        //await client.close();
+    }
+}
+
+
+
+
+
+
+
 const botName = "chaton";
 
 // When user connects to 'socket'
@@ -362,6 +418,7 @@ io.on('connection', socket => {
             for(var i=0; i<Object.keys(obj).length; i++) {
                 socket.emit('message',
                     formatPrivateMsg(obj[i].from, obj[i].to, obj[i].message, obj[i].time));
+                
             }
             console.log("INFO: Message load complete!");
         }
