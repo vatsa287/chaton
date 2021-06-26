@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome!</title>
+    <link rel="stylesheet" href="style.css">
+    <!--<script src="/socket.io/socket.io.js"></script>-->
 </head>
+
 <body>
     <div id="login-container">
-        <form id="login-form" action="chat.html">
+        <form id="login-form" action="/" method="post">
             <input
                 id="username"
                 name="username"
@@ -15,18 +18,39 @@
                 placeholder="Enter username"
                 required
                 autocomplete="off"
-            />
+            /><br><br>
             <input
-                id="userroom"
-                name="room"
-                type="text"
-                placeholder="Enter room to chat"
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Enter password"
                 required
                 autocomplete="off"
-            />
-            <input type="submit" value="login" id="login"/>
+            /><br><br>
+            <input
+                id="phone"
+                name="phone"
+                type="text"
+                placeholder="Enter phone number"
+                required
+                autocomplete="off"
+            /><br>
+            <input type="button" value="login" onclick="userlogin()" id="login" /><br><br>
+            New user?<button type="button">signup</button>
         </form>
     </div>
-    <script src="js/main.js"></script>
+    <script type="text/javascript">
+    function userlogin() {
+   
+    const username = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+    const phone = document.getElementById("phone").value;
+   
+    localStorage.setItem("usrname", username);
+    localStorage.setItem("usrphone", phone);
+    window.location.replace("chat.html");
+
+}
+    </script>
 </body>
 </html>
